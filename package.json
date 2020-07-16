@@ -1,0 +1,12 @@
+{
+    "name": "clean-api",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/higorhms/clean-api.git",
+    "author": "Higor <higorhmscebrac@hotmail.com>",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+        "git-commit-msg-linter": "^2.4.4"
+    }
+}
