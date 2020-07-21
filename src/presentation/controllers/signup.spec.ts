@@ -1,8 +1,12 @@
 import SignUpController from './signup'
 
+let signUpController: SignUpController
+
 describe('SignUp Controller', () => {
+  beforeEach(() => {
+    signUpController = new SignUpController()
+  })
   test('Should return 400 if no name is provided',() => {
-    const signUpController = new SignUpController()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -17,7 +21,6 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no email is provided',() => {
-    const signUpController = new SignUpController()
     const httpRequest = {
       body: {
         name: 'any_name',
