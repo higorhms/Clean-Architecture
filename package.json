@@ -24,7 +24,11 @@
         "typescript": "^3.9.6"
     },
     "scripts": {
-        "test": "jest --passWithNoTests --watch",
-        "test:staged": "jest --passWithNoTests"
+        "test": "jest --passWithNoTests --watch --silent --noStackTrace",
+        "test:unit": "jest --passWithNoTests --watch --silent --noStackTrace -c jest-unit-config.js",
+        "test:integration": "jest --passWithNoTests --watch --silent --noStackTrace --runInBand -c jest-integration-config.js",
+        "test:verbose": "jest --passWithNoTests --watch",
+        "test:staged": "yarn test -- --findRelatedTests",
+        "test:ci": "yarn test -- --coverage"
     }
 }
