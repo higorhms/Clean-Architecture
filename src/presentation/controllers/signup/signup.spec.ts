@@ -1,8 +1,6 @@
 import SignUpController from './signup'
-import { MissingParamError,InvalidParamError,ServerError } from '../errors/index'
-import { EmailValidator } from '../protocols/index'
-import { AccountModel } from '../../domain/models/account'
-import { AddAccountModel, AddAccount } from '../../domain/usecases/add-account'
+import { MissingParamError,InvalidParamError,ServerError } from '../../errors/index'
+import { AddAccountModel, AddAccount ,AccountModel,EmailValidator } from './signup-protocols'
 
 let signUpController: SignUpController
 let emailValidatorStub: EmailValidator
