@@ -28,7 +28,7 @@
         "test:unit": "jest --passWithNoTests --watch --silent --noStackTrace -c jest-unit-config.js",
         "test:integration": "jest --passWithNoTests --watch --silent --noStackTrace --runInBand -c jest-integration-config.js",
         "test:verbose": "jest --passWithNoTests --watch",
-        "test:staged": "yarn test -- --findRelatedTests",
+        "test:staged": "jest --passWithNoTests --silent --noStackTrace --findRelatedTests",
         "test:ci": "jest --passWithNoTests --coverage"
     }
 }
