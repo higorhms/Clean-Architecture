@@ -103,4 +103,21 @@ describe('DbAddAccount Usecase', () => {
 
     await expect(accoutPromise).rejects.toThrow();
   });
+
+  it('Should return an account on success', async () => {
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+
+    const account = await dbAddAccount.add(accountData);
+
+    expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password',
+    });
+  });
 });
