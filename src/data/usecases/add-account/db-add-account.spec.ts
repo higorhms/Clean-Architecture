@@ -1,8 +1,15 @@
 import { DbAddAccount } from './db-add-account';
-import { AddAccount, Encrypter } from './db-add-account-protocols';
+import {
+  AddAccount,
+  Encrypter,
+  AddAccountRepository,
+} from './db-add-account-protocols';
+import { AddAccountModel } from '../../../domain/usecases/add-account';
+import { AccountModel } from '../../../domain/models/account';
 
 let dbAddAccount: AddAccount;
 let encrypterStub: Encrypter;
+let addAccountRepositoryStub: AddAccountRepository;
 
 jest.mock('../../protocols/encrypter', () => ({
   encrypt: () => 'hashed_password',
@@ -14,10 +21,23 @@ class EncrypterStub implements Encrypter {
   }
 }
 
+class AddAccountRepositoryStub {
+  async add(accountData: AddAccountModel): Promise<AccountModel> {
+    const fakeAccount = {
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password',
+    };
+    return Promise.resolve(fakeAccount);
+  }
+}
+
 describe('DbAddAccount Usecase', () => {
   beforeEach(() => {
+    addAccountRepositoryStub = new AddAccountRepositoryStub();
     encrypterStub = new EncrypterStub();
-    dbAddAccount = new DbAddAccount(encrypterStub);
+    dbAddAccount = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
   });
 
   it('Should call Encrypter with correct password', () => {
@@ -48,5 +68,23 @@ describe('DbAddAccount Usecase', () => {
     const accoutPromise = dbAddAccount.add(accountData);
 
     await expect(accoutPromise).rejects.toThrow();
+  });
+
+  it('Should call AddAccountRepository with correct values', async () => {
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+
+    await dbAddAccount.add(accountData);
+
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password',
+    });
   });
 });
