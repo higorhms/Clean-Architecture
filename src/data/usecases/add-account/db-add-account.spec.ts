@@ -9,7 +9,7 @@ jest.mock('../../protocols/encrypter', () => ({
   encrypt: () => 'hashed_password',
 }));
 
-class EncrypterStub {
+class EncrypterStub implements Encrypter {
   async encrypt(value: string): Promise<string> {
     return Promise.resolve('hashed_password');
   }
@@ -33,5 +33,21 @@ describe('DbAddAccount Usecase', () => {
     dbAddAccount.add(accountData);
 
     expect(encryptSpy).toHaveBeenCalledWith('valid_password');
+  });
+
+  it('Should throw if Encrypter throw', async () => {
+    jest
+      .spyOn(encrypterStub, 'encrypt')
+      .mockReturnValueOnce(Promise.reject(new Error()));
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+
+    const accoutPromise = dbAddAccount.add(accountData);
+
+    await expect(accoutPromise).rejects.toThrow();
   });
 });
