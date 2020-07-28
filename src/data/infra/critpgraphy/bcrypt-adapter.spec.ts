@@ -5,6 +5,10 @@ import { Encrypter } from '../../protocols/encrypter';
 
 let bcryptAdapter: Encrypter;
 
+jest.mock('bcrypt', () => ({
+  hash: () => 'hashed_value',
+}));
+
 describe('BCrypt Adapter', () => {
   beforeEach(() => {
     bcryptAdapter = new BCryptAdapter(12);
@@ -16,5 +20,11 @@ describe('BCrypt Adapter', () => {
     await bcryptAdapter.encrypt('any_value');
 
     expect(hashSpy).toHaveBeenCalledWith('any_value', salt);
+  });
+
+  it('Should return a hash on success', async () => {
+    const hashedValue = await bcryptAdapter.encrypt('any_value');
+
+    expect(hashedValue).toBe('hashed_value');
   });
 });
