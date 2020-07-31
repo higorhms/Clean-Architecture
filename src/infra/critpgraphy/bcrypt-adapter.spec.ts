@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { BCryptAdapter } from './bcrypt-adapter';
-import { Encrypter } from '../../protocols/encrypter';
+import { Encrypter } from '../../data/protocols/encrypter';
 
 let bcryptAdapter: Encrypter;
 const salt = 12;
