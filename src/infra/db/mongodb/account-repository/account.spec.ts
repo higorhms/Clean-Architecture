@@ -3,9 +3,14 @@ import { AccountMongoRepository } from './account';
 
 let accountMongoRepository: AccountMongoRepository;
 
+/**
+ * Integration tests
+ */
 describe('Account Mongo Repository', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     accountMongoRepository = new AccountMongoRepository();
+    const accountCollection = MongoHelper.getCollection('accounts');
+    await accountCollection.deleteMany({});
   });
 
   beforeAll(async () => {
