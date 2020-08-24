@@ -9,7 +9,7 @@ let accountMongoRepository: AccountMongoRepository;
 describe('Account Mongo Repository', () => {
   beforeEach(async () => {
     accountMongoRepository = new AccountMongoRepository();
-    const accountCollection = MongoHelper.getCollection('accounts');
+    const accountCollection = await MongoHelper.getCollection('accounts');
     await accountCollection.deleteMany({});
   });
 

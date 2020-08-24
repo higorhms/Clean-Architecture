@@ -5,7 +5,7 @@ import MongoHelper from '../../infra/db/mongodb/helpers/mongo-helper';
 
 describe('SignUp Route', () => {
   beforeEach(async () => {
-    const accountCollection = MongoHelper.getCollection('accounts');
+    const accountCollection = await MongoHelper.getCollection('accounts');
     await accountCollection.deleteMany({});
   });
 
