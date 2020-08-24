@@ -1,5 +1,5 @@
 import { LogControllerDecorator } from './log';
-import { Controller, HttpResponse } from '../../presentation/protocols';
+import { Controller } from '../../presentation/protocols';
 
 let logController: LogControllerDecorator;
 
@@ -23,7 +23,7 @@ describe('LogController Decorator', () => {
   it('Shoud returns controllers return with same values', async () => {
     jest
       .spyOn(mockedConroller, 'handle')
-      .mockReturnValue(Promise.resolve({ body: {}, statusCode: 400 }));
+      .mockReturnValueOnce(Promise.resolve({ body: {}, statusCode: 400 }));
 
     const httpResponse = await logController.handle({ body: {} });
 
