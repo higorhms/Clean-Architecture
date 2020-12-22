@@ -148,7 +148,7 @@ describe('SignUp Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com.br');
   });
 
-  test('Should return 500 if an email validator throws', async () => {
+  test('Should return 500 if email validator throws', async () => {
     jest
       .spyOn(emailValidatorStub, 'isValid')
       .mockImplementationOnce((email: string) => {
@@ -166,7 +166,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await signUpController.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(500);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toBeInstanceOf(ServerError);
   });
 
   test('Should call AddAccount with correct values', async () => {
@@ -207,7 +207,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await signUpController.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(500);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toBeInstanceOf(ServerError);
   });
 
   test('Should return 200 valid data is provided', async () => {
