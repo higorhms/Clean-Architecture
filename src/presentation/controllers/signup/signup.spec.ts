@@ -16,13 +16,13 @@ let emailValidatorStub: EmailValidator;
 let addAccountStub: AddAccount;
 
 class EmailValidatorStub implements EmailValidator {
-  isValid(email: string): boolean {
+  isValid(_: string): boolean {
     return true;
   }
 }
 
 class AddAccountStub implements AddAccount {
-  async add(account: AddAccountModel): Promise<AccountModel> {
+  async add(_: AddAccountModel): Promise<AccountModel> {
     return Promise.resolve({
       id: 'valid_id',
       name: 'valid_name',
@@ -148,10 +148,10 @@ describe('SignUp Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com.br');
   });
 
-  test('Should return 500 if email validator throws', async () => {
+  test('Should return 500 if an email validator throws', async () => {
     jest
       .spyOn(emailValidatorStub, 'isValid')
-      .mockImplementationOnce((email: string) => {
+      .mockImplementationOnce((_: string) => {
         throw new Error();
       });
 
@@ -166,7 +166,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await signUpController.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(500);
-    expect(httpResponse.body).toBeInstanceOf(ServerError);
+    expect(httpResponse.body).toEqual(new ServerError(null));
   });
 
   test('Should call AddAccount with correct values', async () => {
@@ -192,7 +192,7 @@ describe('SignUp Controller', () => {
   test('Should return 500 if AddAccount throws', async () => {
     jest
       .spyOn(addAccountStub, 'add')
-      .mockImplementationOnce((account: AddAccountModel) => {
+      .mockImplementationOnce((_: AddAccountModel) => {
         throw new Error();
       });
 
@@ -207,7 +207,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await signUpController.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(500);
-    expect(httpResponse.body).toBeInstanceOf(ServerError);
+    expect(httpResponse.body).toEqual(new ServerError(null));
   });
 
   test('Should return 200 valid data is provided', async () => {
