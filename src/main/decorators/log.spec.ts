@@ -1,16 +1,33 @@
 import { LogControllerDecorator } from './log';
 import { Controller } from '../../presentation/protocols';
+import { serverError } from '../../presentation/helpers/http-helper';
+import { ILogErrorRepository } from '../../data/protocols/log-error-repository';
 
 let logController: LogControllerDecorator;
+
+const makeLogErrorRepository = (): ILogErrorRepository => {
+  class LogErrorRepositoryStub implements ILogErrorRepository {
+    async log(_: string): Promise<void> {
+      return Promise.resolve();
+    }
+  }
+  return new LogErrorRepositoryStub();
+};
 
 const mockedConroller: Controller = {
   handle: () =>
     Promise.resolve({ body: { name: 'valid_name' }, statusCode: 200 }),
 };
 
+let logErrorRepository: ILogErrorRepository;
+
 describe('LogController Decorator', () => {
   beforeAll(() => {
-    logController = new LogControllerDecorator(mockedConroller);
+    logErrorRepository = makeLogErrorRepository();
+    logController = new LogControllerDecorator(
+      mockedConroller,
+      logErrorRepository,
+    );
   });
 
   it('Shoud calls controller handle method', async () => {
@@ -41,5 +58,23 @@ describe('LogController Decorator', () => {
       body: { name: 'valid_name' },
       statusCode: 200,
     });
+  });
+
+  it('Shoud call logErrorRepository with correct error if controller returns a server error', async () => {
+    jest
+      .spyOn(mockedConroller, 'handle')
+      .mockReturnValueOnce(
+        Promise.resolve(
+          serverError(
+            Object.assign(new Error(), { stack: 'any_stack' } as Error),
+          ),
+        ),
+      );
+
+    const logSpy = jest.spyOn(logErrorRepository, 'log');
+
+    await logController.handle({ body: {} });
+
+    expect(logSpy).toHaveBeenCalledWith('any_stack');
   });
 });
