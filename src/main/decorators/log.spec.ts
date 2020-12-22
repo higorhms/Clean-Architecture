@@ -4,7 +4,8 @@ import { Controller } from '../../presentation/protocols';
 let logController: LogControllerDecorator;
 
 const mockedConroller: Controller = {
-  handle: () => Promise.resolve({ body: {}, statusCode: 200 }),
+  handle: () =>
+    Promise.resolve({ body: { name: 'valid_name' }, statusCode: 200 }),
 };
 
 describe('LogController Decorator', () => {
@@ -30,5 +31,15 @@ describe('LogController Decorator', () => {
     expect(httpResponse).toBeTruthy();
     expect(httpResponse).toHaveProperty('body');
     expect(httpResponse).toHaveProperty('statusCode');
+  });
+
+  it('Shoud returns controllers return with same values', async () => {
+    const httpResponse = await logController.handle({ body: {} });
+
+    expect(httpResponse).toBeTruthy();
+    expect(httpResponse).toEqual({
+      body: { name: 'valid_name' },
+      statusCode: 200,
+    });
   });
 });
