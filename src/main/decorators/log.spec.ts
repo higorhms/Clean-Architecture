@@ -7,7 +7,7 @@ let logController: LogControllerDecorator;
 
 const makeLogErrorRepository = (): ILogErrorRepository => {
   class LogErrorRepositoryStub implements ILogErrorRepository {
-    async log(_: string): Promise<void> {
+    async logError(_: string): Promise<void> {
       return Promise.resolve();
     }
   }
@@ -71,7 +71,7 @@ describe('LogController Decorator', () => {
         ),
       );
 
-    const logSpy = jest.spyOn(logErrorRepository, 'log');
+    const logSpy = jest.spyOn(logErrorRepository, 'logError');
 
     await logController.handle({ body: {} });
 
