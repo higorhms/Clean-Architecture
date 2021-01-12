@@ -9,11 +9,19 @@ import {
   AddAccount,
   AccountModel,
   EmailValidator,
+  IValidation,
 } from './signup-protocols';
 
 let signUpController: SignUpController;
 let emailValidatorStub: EmailValidator;
 let addAccountStub: AddAccount;
+let validationStub: IValidation;
+
+class ValidationStub implements IValidation {
+  validate(input: any): Error {
+    return null;
+  }
+}
 
 class EmailValidatorStub implements EmailValidator {
   isValid(_: string): boolean {
@@ -36,7 +44,12 @@ describe('SignUp Controller', () => {
   beforeEach(() => {
     emailValidatorStub = new EmailValidatorStub();
     addAccountStub = new AddAccountStub();
-    signUpController = new SignUpController(emailValidatorStub, addAccountStub);
+    validationStub = new ValidationStub();
+    signUpController = new SignUpController(
+      emailValidatorStub,
+      addAccountStub,
+      validationStub,
+    );
   });
 
   test('Should return 400 if no name is provided', async () => {
@@ -228,5 +241,22 @@ describe('SignUp Controller', () => {
       email: 'valid_email@mail.com.br',
       password: 'valid_password',
     });
+  });
+
+  test('Should call Validation with correct values', async () => {
+    const validateSpy = jest.spyOn(validationStub, 'validate');
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com.br',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    await signUpController.handle(httpRequest);
+
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body);
   });
 });
