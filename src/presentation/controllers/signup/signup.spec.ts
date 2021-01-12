@@ -11,6 +11,7 @@ import {
   EmailValidator,
   IValidation,
 } from './signup-protocols';
+import { badRequest } from '../../helpers/http-helper';
 
 let signUpController: SignUpController;
 let emailValidatorStub: EmailValidator;
@@ -258,5 +259,26 @@ describe('SignUp Controller', () => {
     await signUpController.handle(httpRequest);
 
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+
+  test('Should return 400 if Validation returns an Error', async () => {
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'));
+
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com.br',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+
+    const httpResponse = await signUpController.handle(httpRequest);
+
+    expect(httpResponse).toEqual(
+      badRequest(new MissingParamError('any_field')),
+    );
   });
 });
