@@ -44,7 +44,7 @@
     "scripts": {
         "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/main/server.ts",
         "test": "jest --passWithNoTests --watch --silent --noStackTrace",
-        "test:unit": "jest --passWithNoTests --watch --silent --noStackTrace -c jest-unit-config.js",
+        "test:unit": "jest --passWithNoTests --watch --silent -c jest-unit-config.js",
         "test:integration": "jest --passWithNoTests --watch --silent --noStackTrace --runInBand -c jest-integration-config.js",
         "test:verbose": "jest --passWithNoTests --watch",
         "test:staged": "jest --passWithNoTests --silent --noStackTrace --findRelatedTests",
