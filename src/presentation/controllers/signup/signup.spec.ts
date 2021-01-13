@@ -4,13 +4,11 @@ import {
   AddAccountModel,
   AddAccount,
   AccountModel,
-  EmailValidator,
   IValidation,
 } from './signup-protocols';
 import { badRequest } from '../../helpers/http-helper';
 
 let signUpController: SignUpController;
-let emailValidatorStub: EmailValidator;
 let addAccountStub: AddAccount;
 let validationStub: IValidation;
 
