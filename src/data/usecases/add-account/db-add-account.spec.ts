@@ -11,10 +11,6 @@ let dbAddAccount: AddAccount;
 let encrypterStub: Encrypter;
 let addAccountRepositoryStub: AddAccountRepository;
 
-jest.mock('../../protocols/encrypter', () => ({
-  encrypt: () => 'hashed_password',
-}));
-
 const makeAccountData = (): AddAccountModel => ({
   name: 'valid_name',
   email: 'valid_email',

@@ -1,7 +1,7 @@
 import { LogControllerDecorator } from './log';
 import { Controller } from '../../presentation/protocols';
 import { serverError } from '../../presentation/helpers/http/http-helper';
-import { ILogErrorRepository } from '../../data/protocols/log-error-repository';
+import { ILogErrorRepository } from '../../data/protocols/db/log-error-repository';
 
 let logController: LogControllerDecorator;
 
