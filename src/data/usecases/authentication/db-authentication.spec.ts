@@ -1,5 +1,9 @@
 import { AccountModel } from '../../../domain/models/account';
 import { IAuthenticationModel } from '../../../domain/usecases/authentication';
+import {
+  IHashComparer,
+  IHashComparerModel,
+} from '../../protocols/criptography/hash-comparer';
 import { ILoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository';
 import { DbAuthentication } from './db-authentication';
 
@@ -7,7 +11,7 @@ const makeFakeAccount = (): AccountModel => ({
   id: 'any_id',
   name: 'any_name',
   email: 'any_email@mail.com',
-  password: 'any_password',
+  password: 'hashed_password',
 });
 
 const makeLoadAccountByEmailRespository = (): ILoadAccountByEmailRepository => {
@@ -26,18 +30,33 @@ const makeFakeAuthentication = (): IAuthenticationModel => ({
   password: 'any_password',
 });
 
+const makeHashComparer = (): IHashComparer => {
+  class HashComparerStub implements IHashComparer {
+    async compare(_: IHashComparerModel): Promise<boolean> {
+      return true;
+    }
+  }
+
+  return new HashComparerStub();
+};
 interface ISutTypes {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: ILoadAccountByEmailRepository;
+  hashComparerStub: IHashComparer;
 }
 
 const makeSut = (): ISutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRespository();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub);
+  const hashComparerStub = makeHashComparer();
+  const sut = new DbAuthentication(
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+  );
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
+    hashComparerStub,
   };
 };
 
@@ -74,5 +93,18 @@ describe('DbAuthentication', () => {
     const accessToken = await sut.auth(makeFakeAuthentication());
 
     expect(accessToken).toBeNull();
+  });
+
+  it('Should call HashComparer with correct valuesd', async () => {
+    const { sut, hashComparerStub } = makeSut();
+
+    const compareSpy = jest.spyOn(hashComparerStub, 'compare');
+
+    await sut.auth(makeFakeAuthentication());
+
+    expect(compareSpy).toHaveBeenCalledWith({
+      unhashed: 'any_password',
+      hash: 'hashed_password',
+    });
   });
 });
