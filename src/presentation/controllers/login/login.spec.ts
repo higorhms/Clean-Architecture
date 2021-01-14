@@ -8,6 +8,7 @@ import {
 } from '../../helpers/http/http-helper';
 import { LoginController } from './login';
 import { IValidation } from '../signup/signup-protocols';
+import { IAuthenticationModel } from '../../../domain/usecases/authentication';
 
 const makeValidationStub = (): IValidation => {
   class ValidationStub implements IValidation {
@@ -21,7 +22,7 @@ const makeValidationStub = (): IValidation => {
 
 const makeAuthentication = (): IAuthentication =>
   ({
-    auth: (email: string, password: string): Promise<string> => {
+    auth: (data: IAuthenticationModel): Promise<string> => {
       return Promise.resolve('any_token');
     },
   } as IAuthentication);
@@ -52,14 +53,17 @@ const makeSut = (): SutTypes => {
 };
 
 describe('Login Controller', () => {
-  it('Should call Authentication with correct email', async () => {
+  it('Should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut();
 
     const authSpy = jest.spyOn(authenticationStub, 'auth');
 
     await sut.handle(makeFakeRequest());
 
-    expect(authSpy).toHaveBeenCalledWith('any_email@email.com', 'any_password');
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_email@email.com',
+      password: 'any_password',
+    });
   });
 
   it('should return 401 if invalid credentials are provided', async () => {
