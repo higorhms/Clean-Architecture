@@ -15,6 +15,6 @@ export class DbAuthentication implements IAuthentication {
   }: IAuthenticationModel): Promise<string> {
     await this.loadAccountByEmailRepository.load(email);
 
-    return '';
+    return null;
   }
 }
