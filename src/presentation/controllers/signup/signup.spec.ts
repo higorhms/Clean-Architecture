@@ -6,7 +6,7 @@ import {
   AccountModel,
   IValidation,
 } from './signup-protocols';
-import { badRequest } from '../../helpers/http-helper';
+import { badRequest } from '../../helpers/http/http-helper';
 
 let signUpController: SignUpController;
 let addAccountStub: AddAccount;

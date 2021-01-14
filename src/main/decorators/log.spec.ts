@@ -1,6 +1,6 @@
 import { LogControllerDecorator } from './log';
 import { Controller } from '../../presentation/protocols';
-import { serverError } from '../../presentation/helpers/http-helper';
+import { serverError } from '../../presentation/helpers/http/http-helper';
 import { ILogErrorRepository } from '../../data/protocols/log-error-repository';
 
 let logController: LogControllerDecorator;
