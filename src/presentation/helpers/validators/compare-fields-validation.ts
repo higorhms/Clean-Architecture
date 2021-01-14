@@ -1,5 +1,5 @@
 import { InvalidParamError } from '../../errors';
-import { IValidation } from './validation';
+import { IValidation } from '../../protocols/validation';
 
 interface ICompareFieldsRequest {
   field: string;
