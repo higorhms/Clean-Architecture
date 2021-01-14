@@ -5,12 +5,14 @@ import {
 import { IHashComparer } from '../../protocols/criptography/hash-comparer';
 import { ITokenGenerator } from '../../protocols/criptography/token-generator';
 import { ILoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository';
+import { IUpdateAccessTokenRepository } from '../../protocols/db/update-access-token-repository';
 
 export class DbAuthentication implements IAuthentication {
   constructor(
     private readonly loadAccountByEmailRepository: ILoadAccountByEmailRepository,
     private readonly hashComparer: IHashComparer,
     private readonly tokenGenerator: ITokenGenerator,
+    private readonly updateAccessTokenRepositoryStub: IUpdateAccessTokenRepository,
   ) {}
 
   public async auth({
@@ -32,8 +34,11 @@ export class DbAuthentication implements IAuthentication {
       userId: account.id,
     });
 
-    if (accessToken) return accessToken;
+    await this.updateAccessTokenRepositoryStub.update({
+      userId: account.id,
+      token: accessToken,
+    });
 
-    return null;
+    return accessToken || null;
   }
 }
