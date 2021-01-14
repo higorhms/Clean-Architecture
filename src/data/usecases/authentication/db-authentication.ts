@@ -3,12 +3,14 @@ import {
   IAuthenticationModel,
 } from '../../../domain/usecases/authentication';
 import { IHashComparer } from '../../protocols/criptography/hash-comparer';
+import { ITokenGenerator } from '../../protocols/criptography/token-generator';
 import { ILoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository';
 
 export class DbAuthentication implements IAuthentication {
   constructor(
     private readonly loadAccountByEmailRepository: ILoadAccountByEmailRepository,
     private readonly hashComparer: IHashComparer,
+    private readonly tokenGenerator: ITokenGenerator,
   ) {}
 
   public async auth({
@@ -19,10 +21,14 @@ export class DbAuthentication implements IAuthentication {
 
     if (!account) return null;
 
-    await this.hashComparer.compare({
+    const compareResult = await this.hashComparer.compare({
       unhashed: password,
       hash: account.password,
     });
+
+    if (!compareResult) return null;
+
+    await this.tokenGenerator.generate({ userId: account.id });
 
     return null;
   }
