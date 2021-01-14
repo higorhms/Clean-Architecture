@@ -21,14 +21,18 @@ export class DbAuthentication implements IAuthentication {
 
     if (!account) return null;
 
-    const compareResult = await this.hashComparer.compare({
+    const isValid = await this.hashComparer.compare({
       unhashed: password,
       hash: account.password,
     });
 
-    if (!compareResult) return null;
+    if (!isValid) return null;
 
-    await this.tokenGenerator.generate({ userId: account.id });
+    const accessToken = await this.tokenGenerator.generate({
+      userId: account.id,
+    });
+
+    if (accessToken) return accessToken;
 
     return null;
   }
